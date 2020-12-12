@@ -25,7 +25,25 @@ func TestCountValidPasswords(t *testing.T) {
 					Min:      1,
 					Max:      3,
 					Letter:   "a",
-					Password: "baaaade",
+					Password: "badaade",
+				},
+			},
+			expected: 1,
+		},
+		{
+			name: "happy path - one valid password, doesn't allow both positions to contain letter",
+			input: []Entry{
+				{
+					Min:      1,
+					Max:      3,
+					Letter:   "a",
+					Password: "baade",
+				},
+				{
+					Min:      1,
+					Max:      3,
+					Letter:   "a",
+					Password: "adaaade",
 				},
 			},
 			expected: 1,
@@ -61,37 +79,19 @@ func TestCountValidPasswords(t *testing.T) {
 			expected: 3,
 		},
 		{
-			name: "happy path - edge case min zero",
+			name: "happy path - one valid password, deals with max greater than length",
 			input: []Entry{
-				{
-					Min:      0,
-					Max:      3,
-					Letter:   "a",
-					Password: "bde",
-				},
 				{
 					Min:      1,
 					Max:      3,
 					Letter:   "a",
-					Password: "baaaade",
-				},
-			},
-			expected: 1,
-		},
-		{
-			name: "happy path - edge case max zero",
-			input: []Entry{
-				{
-					Min:      0,
-					Max:      0,
-					Letter:   "a",
-					Password: "bde",
+					Password: "baade",
 				},
 				{
 					Min:      1,
-					Max:      3,
+					Max:      8,
 					Letter:   "a",
-					Password: "baaaade",
+					Password: "badaade",
 				},
 			},
 			expected: 1,
@@ -102,6 +102,43 @@ func TestCountValidPasswords(t *testing.T) {
 			actual := CountValidPasswords(tt.input)
 			if actual != tt.expected {
 				t.Errorf("expected %d valid passwords but got %d", tt.expected, actual)
+			}
+		})
+	}
+}
+
+func TestValid(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    Entry
+		expected bool
+	}{
+		{
+			name: "happy path - one valid password",
+			input: Entry{
+				Min:      1,
+				Max:      3,
+				Letter:   "a",
+				Password: "baade",
+			},
+			expected: true,
+		},
+		{
+			name: "happy path - multiple valid passwords",
+			input: Entry{
+				Min:      1,
+				Max:      3,
+				Letter:   "d",
+				Password: "baaaadddde",
+			},
+			expected: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := tt.input.ValidDeprecated()
+			if actual != tt.expected {
+				t.Errorf("expected %t valid password but got %t", tt.expected, actual)
 			}
 		})
 	}

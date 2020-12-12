@@ -18,8 +18,8 @@ type Entry struct {
 	Password string
 }
 
-// Valid ...
-func (r Entry) Valid() bool {
+// ValidDeprecated ...
+func (r Entry) ValidDeprecated() bool {
 	occurrences := 0
 	for _, c := range r.Password {
 		if string(c) == r.Letter {
@@ -30,6 +30,22 @@ func (r Entry) Valid() bool {
 		return false
 	}
 	return true
+}
+
+// Valid ...
+func (r Entry) Valid() bool {
+	// Keeping in mind that min & max now mean at either or
+	if len(r.Password) < r.Max {
+		return false
+	}
+	// Only one of the positions can contain the letter
+	if string(r.Password[r.Min-1]) == r.Letter && string(r.Password[r.Max-1]) != r.Letter {
+		return true
+	}
+	if string(r.Password[r.Min-1]) != r.Letter && string(r.Password[r.Max-1]) == r.Letter {
+		return true
+	}
+	return false
 }
 
 // Run ...
