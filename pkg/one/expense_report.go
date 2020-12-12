@@ -127,3 +127,17 @@ func findSumForSection(data []int, initial int, sumParts int) (bool, []int) {
 	}
 	return false, nil
 }
+
+// Find2020SumRecursive ...
+// First iteration - will just keep accumulating so will work if given an array of only three items that sums to the target
+func Find2020SumRecursive(data []int, pos int, limit int, parts int, sum int, target int, elements []int) []int {
+	if parts == limit && sum == target {
+		return elements
+	}
+	value := data[pos]
+	sum += value
+	pos++
+	parts++
+	elements = append(elements, value)
+	return Find2020SumRecursive(data, pos, limit, parts, sum, target, elements)
+}

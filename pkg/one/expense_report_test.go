@@ -178,7 +178,7 @@ func TestFind2020SumStack(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(*testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 			actual, actualErr := FindSum2020Stack(tt.inputData)
 			if !reflect.DeepEqual(actual, tt.expected) {
 				t.Errorf("expected integer array %v but got integer array %v", tt.expected, actual)
@@ -186,6 +186,53 @@ func TestFind2020SumStack(t *testing.T) {
 			if reflect.TypeOf(actualErr) != reflect.TypeOf(tt.expectedError) {
 				t.Errorf("expected error type %v but got error type %v", reflect.TypeOf(tt.expectedError), reflect.TypeOf(actualErr))
 				t.Log(actualErr)
+			}
+		})
+	}
+}
+
+func TestFind2020SumRecursive(t *testing.T) {
+	type args struct {
+		data     []int
+		pos      int
+		limit    int
+		parts    int
+		sum      int
+		target   int
+		elements []int
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected []int
+	}{
+		{
+			name: "happy path - simple ordered example",
+			args: args{
+				data: []int{
+					979,
+					366,
+					675,
+				},
+				pos:      0,
+				limit:    3,
+				parts:    0,
+				sum:      0,
+				target:   2020,
+				elements: []int{},
+			},
+			expected: []int{
+				979,
+				366,
+				675,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := Find2020SumRecursive(tt.args.data, tt.args.pos, tt.args.limit, tt.args.parts, tt.args.sum, tt.args.target, tt.args.elements)
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("Expected elements %v but got elements %v", tt.expected, actual)
 			}
 		})
 	}
