@@ -76,9 +76,6 @@ func ParseInput(filepath string) ([]Entry, error) {
 		return nil, err
 	}
 	lines := strings.Split(string(data), "\n")
-	if err != nil {
-		return nil, err
-	}
 	for _, line := range lines {
 		if line != "" {
 			items := strings.Split(line, " ")
