@@ -147,6 +147,7 @@ func TestParseInput(t *testing.T) {
 			// Create a mock file and write each item to the file
 			// as a new line to replicate the format of the input data
 			f, _ := os.Create(tt.mockFilePath)
+			defer os.Remove(tt.mockFilePath)
 			f.WriteString(tt.mockFileData)
 			actual, actualError := ParseInput(tt.mockFilePath)
 			for i, a := range actual {
