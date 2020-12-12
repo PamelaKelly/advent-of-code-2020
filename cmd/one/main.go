@@ -7,10 +7,12 @@ import (
 )
 
 func main() {
-	// First iteration solution
-	result, err := one.FindExpenseKey()
+	// Day 1 - Part 1 - First iteration solution
+	basicKey, threePartKey, err := one.FindExpenseKey()
 	if err != nil {
 		fmt.Printf("could not find expense key due to error: %s\n", err.Error())
 	}
-	fmt.Printf("The value needed to fix your expense report is: %d\n", result)
+	fmt.Printf("The value needed to fix your expense report with 2 sum parts is: %d\n", basicKey)
+	fmt.Printf("The value needed to fix your expense report with 3 sum parts is: %d\n", threePartKey)
+
 }

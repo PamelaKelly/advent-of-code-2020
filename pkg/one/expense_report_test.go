@@ -117,3 +117,76 @@ func TestFind2020Sum(t *testing.T) {
 		})
 	}
 }
+
+func TestFind2020SumStack(t *testing.T) {
+	tests := []struct {
+		name          string
+		inputData     []int
+		expected      []int
+		expectedError error
+	}{
+		{
+			name: "happy path with sum parts of 3",
+			inputData: []int{
+				1721,
+				979,
+				366,
+				299,
+				675,
+				1456,
+			},
+			expected: []int{
+				979,
+				366,
+				675,
+			},
+			expectedError: nil,
+		},
+		{
+			name: "happy path with sum parts of 3",
+			inputData: []int{
+				979,
+				1721,
+				366,
+				299,
+				675,
+				1456,
+			},
+			expected: []int{
+				979,
+				366,
+				675,
+			},
+			expectedError: nil,
+		},
+		{
+			name: "happy path with sum parts of 3",
+			inputData: []int{
+				1721,
+				366,
+				299,
+				675,
+				1456,
+				979,
+			},
+			expected: []int{
+				366,
+				675,
+				979,
+			},
+			expectedError: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(*testing.T) {
+			actual, actualErr := FindSum2020Stack(tt.inputData)
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("expected integer array %v but got integer array %v", tt.expected, actual)
+			}
+			if reflect.TypeOf(actualErr) != reflect.TypeOf(tt.expectedError) {
+				t.Errorf("expected error type %v but got error type %v", reflect.TypeOf(tt.expectedError), reflect.TypeOf(actualErr))
+				t.Log(actualErr)
+			}
+		})
+	}
+}
