@@ -2,11 +2,13 @@ package four
 
 import (
 	"io/ioutil"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
 const (
-	pathToData = "input/four.txt"
+	pathToData = "input/four-smaller.txt"
 )
 
 var requiredFields = []string{
@@ -21,7 +23,7 @@ var requiredFields = []string{
 
 // Passport ...
 type Passport struct {
-	Fields map[string]string
+	FieldsJson map[string]string
 }
 
 // Run ...
@@ -59,12 +61,12 @@ func ParseInput(filepath string) ([]Passport, error) {
 // FormatPassport ...
 func FormatPassport(raw string) Passport {
 	passport := Passport{
-		Fields: map[string]string{},
+		FieldsJson: map[string]string{},
 	}
 	allfields := strings.FieldsFunc(raw, Sep)
 	for _, field := range allfields {
 		f := strings.Split(field, ":")
-		passport.Fields[f[0]] = f[1]
+		passport.FieldsJson[f[0]] = f[1]
 	}
 	return passport
 }
@@ -73,8 +75,60 @@ func FormatPassport(raw string) Passport {
 func (p Passport) Valid(required []string) bool {
 	// Invalid if any field in list of required fields is missing
 	for _, req := range required {
-		if _, ok := p.Fields[req]; !ok {
-			return false
+		if val, ok := p.FieldsJson[req]; ok {
+			switch req {
+			case "byr":
+				year, err := strconv.Atoi(val)
+				if err != nil || year < 1920 || year > 2002 {
+					return false
+				}
+			case "iyr":
+				year, err := strconv.Atoi(val)
+				if err != nil || year < 2010 || year > 2020 {
+					return false
+				}
+			case "eyr":
+				year, err := strconv.Atoi(val)
+				if err != nil || year < 2020 || year > 2030 {
+					return false
+				}
+			case "hgt":
+				// The last two characters have to represent the metrics
+				metric := val[len(val)-2:]
+				_, err := regexp.MatchString("cm|in", metric)
+				if err != nil {
+					return false
+				}
+				height, err := strconv.Atoi(val[:len(val)-3]) // subslice inclusive?
+				if err != nil {
+					return false
+				}
+				if metric == "cm" {
+					if height < 150 || height > 193 {
+						return false
+					}
+				}
+				if height < 59 || height > 76 {
+					return false
+				}
+			case "ecl":
+				_, err := regexp.MatchString("amb|blu|brn|gry|grn|hzl|oth", val)
+				if err != nil {
+					return false
+				}
+			case "hcl":
+				_, err := regexp.MatchString("^#[a-f0-9]{6}$", val)
+				if err != nil {
+					return false
+				}
+			case "pid":
+				_, err := regexp.MatchString("^[0-9]{9}$", val)
+				if err != nil {
+					return false
+				}
+			case "cid":
+				// whoops we forgot to check this one
+			}
 		}
 	}
 	return true
