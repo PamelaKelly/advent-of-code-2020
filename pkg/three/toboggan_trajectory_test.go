@@ -44,10 +44,11 @@ func TestParseInput(t *testing.T) {
 	}
 }
 
-func TestLetsGo(t *testing.T) {
+func TestCountTreesOnSlope(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    map[int][]int
+		slope    Slope
 		expected int
 	}{
 		{
@@ -58,12 +59,16 @@ func TestLetsGo(t *testing.T) {
 				2: []int{0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1},
 				3: []int{1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0},
 			},
+			slope: Slope{
+				Across: 3,
+				Down:   1,
+			},
 			expected: 2,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := LetsGo(tt.input)
+			actual := CountTreesOnSlope(tt.input, tt.slope.Across, tt.slope.Down)
 			if actual != tt.expected {
 				t.Errorf("expected %d number of trees but got %d", tt.expected, actual)
 			}

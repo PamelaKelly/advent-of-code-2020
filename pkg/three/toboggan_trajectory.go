@@ -10,25 +10,65 @@ const (
 	pathToData = "input/three.txt"
 )
 
+// Slope ...
+type Slope struct {
+	Across int
+	Down   int
+}
+
 // Run ...
 func Run() (int, error) {
 	forest, err := ParseInput(pathToData)
 	if err != nil {
 		return -1, err
 	}
-	return LetsGo(forest), nil
+	// The slopes to calculate
+	slopes := []Slope{
+		{
+			Across: 1,
+			Down:   1,
+		},
+		{
+			Across: 3,
+			Down:   1,
+		},
+		{
+			Across: 5,
+			Down:   1,
+		},
+		{
+			Across: 7,
+			Down:   1,
+		},
+		{
+			Across: 1,
+			Down:   2,
+		},
+	}
+
+	// The trajectory is the product of the trees encountered on all slopes
+	trajectory := 1
+	for _, slope := range slopes {
+		trees := CountTreesOnSlope(forest, slope.Across, slope.Down)
+		trajectory = trajectory * trees
+	}
+	return trajectory, nil
 }
 
-// LetsGo ...
-func LetsGo(forest map[int][]int) int {
+// CountTreesOnSlope ...
+// Todo: this solution essential traverses the map twice - to parse it
+// and then to move through it - we could reduce the size of our data
+// dramatically by only taking note of locations where there are trees
+// and then calculating visited positions and cross referencing
+func CountTreesOnSlope(forest map[int][]int, moveAcross int, moveDown int) int {
 	trees := 0
 	across, down := 0, 0
 	// assuming all rows are the same length
 	rowTrees := len(forest[0])
 	heightForest := len(forest)
 	for {
-		across += 3
-		down++
+		across += moveAcross
+		down += moveDown
 		// the edge of the map
 		// when you reach the horizontal edge move across 3 but difference the length
 		// to get back to the left hand side of the map - removes need to render full map
@@ -39,7 +79,7 @@ func LetsGo(forest map[int][]int) int {
 		}
 		// the bottom of the map
 		if down > heightForest-1 {
-			fmt.Println("We've reached the bottom of the hill")
+			fmt.Printf("We encountered %d trees on this slope\n", trees)
 			return trees
 		}
 		if forest[down][across] == 1 {

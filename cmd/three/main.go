@@ -8,9 +8,9 @@ import (
 
 func main() {
 	// Day three
-	numberOfTrees, err := three.Run()
+	trajectory, err := three.Run()
 	if err != nil {
 		fmt.Printf("failed to sled down the hill with error %s", err.Error())
 	}
-	fmt.Printf("Encountered %d number of trees sledding down the hill\n", numberOfTrees)
+	fmt.Printf("Calculated Toboggan Trajectory: %d\n", trajectory)
 }
