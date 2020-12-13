@@ -11,16 +11,16 @@ func TestParseInput(t *testing.T) {
 		name          string
 		mockFilePath  string
 		mockFileData  string
-		expected      map[int][]bool
+		expected      map[int][]int
 		expectedError error
 	}{
 		{
 			name:         "happy path - forest with single row",
 			mockFilePath: "input.txt",
 			mockFileData: "...#..##.\n#..###...",
-			expected: map[int][]bool{
-				0: []bool{false, false, false, true, false, false, true, true, false},
-				1: []bool{true, false, false, true, true, true, false, false, false},
+			expected: map[int][]int{
+				0: []int{0, 0, 0, 1, 0, 0, 1, 1, 0},
+				1: []int{1, 0, 0, 1, 1, 1, 0, 0, 0},
 			},
 			expectedError: nil,
 		},
@@ -47,16 +47,16 @@ func TestParseInput(t *testing.T) {
 func TestLetsGo(t *testing.T) {
 	tests := []struct {
 		name     string
-		input    map[int][]bool
+		input    map[int][]int
 		expected int
 	}{
 		{
 			name: "happy path - correct number of trees counted",
-			input: map[int][]bool{
-				0: []bool{false, false, false, true, true, true, false, false, false, false, false, true, true, false, true},
-				1: []bool{false, false, false, false, false, false, false, true, true, false, false, true, false, false, true},
-				2: []bool{false, false, true, true, false, false, true, true, true, false, false, false, true, true, true},
-				3: []bool{true, true, false, false, true, false, false, false, false, true, false, false, true, true, false},
+			input: map[int][]int{
+				0: []int{0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1},
+				1: []int{0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1},
+				2: []int{0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1},
+				3: []int{1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0},
 			},
 			expected: 2,
 		},
