@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	pathToData = "input/four-smaller.txt"
+	pathToData = "input/four.txt"
 )
 
 var requiredFields = []string{
@@ -23,7 +23,7 @@ var requiredFields = []string{
 
 // Passport ...
 type Passport struct {
-	FieldsJson map[string]string
+	FieldsJSON map[string]string
 }
 
 // Run ...
@@ -61,12 +61,12 @@ func ParseInput(filepath string) ([]Passport, error) {
 // FormatPassport ...
 func FormatPassport(raw string) Passport {
 	passport := Passport{
-		FieldsJson: map[string]string{},
+		FieldsJSON: map[string]string{},
 	}
 	allfields := strings.FieldsFunc(raw, Sep)
 	for _, field := range allfields {
 		f := strings.Split(field, ":")
-		passport.FieldsJson[f[0]] = f[1]
+		passport.FieldsJSON[f[0]] = f[1]
 	}
 	return passport
 }
@@ -75,7 +75,13 @@ func FormatPassport(raw string) Passport {
 func (p Passport) Valid(required []string) bool {
 	// Invalid if any field in list of required fields is missing
 	for _, req := range required {
-		if val, ok := p.FieldsJson[req]; ok {
+		if _, ok := p.FieldsJSON[req]; !ok {
+			return false
+		}
+	}
+	// Validate each field once confirming each is present
+	for _, req := range required {
+		if val, ok := p.FieldsJSON[req]; ok {
 			switch req {
 			case "byr":
 				year, err := strconv.Atoi(val)
@@ -95,11 +101,11 @@ func (p Passport) Valid(required []string) bool {
 			case "hgt":
 				// The last two characters have to represent the metrics
 				metric := val[len(val)-2:]
-				_, err := regexp.MatchString("cm|in", metric)
-				if err != nil {
+				matched, err := regexp.MatchString("cm|in", metric)
+				if err != nil || !matched {
 					return false
 				}
-				height, err := strconv.Atoi(val[:len(val)-3]) // subslice inclusive?
+				height, err := strconv.Atoi(val[:len(val)-2]) // subslice inclusive?
 				if err != nil {
 					return false
 				}
@@ -107,23 +113,24 @@ func (p Passport) Valid(required []string) bool {
 					if height < 150 || height > 193 {
 						return false
 					}
-				}
-				if height < 59 || height > 76 {
-					return false
+				} else if metric == "in" {
+					if height < 59 || height > 76 {
+						return false
+					}
 				}
 			case "ecl":
-				_, err := regexp.MatchString("amb|blu|brn|gry|grn|hzl|oth", val)
-				if err != nil {
+				matched, err := regexp.MatchString("amb|blu|brn|gry|grn|hzl|oth", val)
+				if err != nil || !matched {
 					return false
 				}
 			case "hcl":
-				_, err := regexp.MatchString("^#[a-f0-9]{6}$", val)
-				if err != nil {
+				matched, err := regexp.MatchString("^#[a-f0-9]{6}$", val)
+				if err != nil || !matched {
 					return false
 				}
 			case "pid":
-				_, err := regexp.MatchString("^[0-9]{9}$", val)
-				if err != nil {
+				matched, err := regexp.MatchString("^[0-9]{9}$", val)
+				if err != nil || !matched {
 					return false
 				}
 			case "cid":
